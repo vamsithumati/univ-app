@@ -14,8 +14,7 @@ export interface ResponseCourse {
   providedIn: 'root',
 })
 export class CourseService {
-  private apiUrl =
-    'http://localhost:8000' || 'https://univ-backend-vhua.onrender.com'; // Replace with your FastAPI backend URL
+  private apiUrl = 'https://univ-backend-vhua.onrender.com'; // Replace with your FastAPI backend URL
 
   constructor(private http: HttpClient) {}
 
