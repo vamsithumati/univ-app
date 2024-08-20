@@ -1,0 +1,33 @@
+<div class="container">
+  <mat-card>
+    <h2>{{ isUpdateMode ? 'Update' : 'Create' }} Course</h2>
+    <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required>
+        <mat-error *ngIf="courseForm.controls['title'].invalid">Title is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <input matInput formControlName="description" required>
+        <mat-error *ngIf="courseForm.controls['description'].invalid">Description is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Duration (hours)</mat-label>
+        <input matInput type="number" formControlName="duration" required>
+        <mat-error *ngIf="courseForm.controls['duration'].invalid">Valid duration is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="date" required>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="courseForm.invalid">
+        {{ isUpdateMode ? 'Update' : 'Create' }} Course
+      </button>
+    </form>
+  </mat-card>
+</div>

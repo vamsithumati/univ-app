@@ -1,0 +1,8 @@
+
+td {
+    max-width: 150px;    /* Set the maximum width for the cell */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;    /* Hide the overflow */
+    text-overflow: ellipsis; /* Show ellipsis (...) for overflowed content */
+    cursor: pointer;     /* Make the cell look clickable */
+  }
