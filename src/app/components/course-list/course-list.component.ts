@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CourseService } from '../../services/course.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./course-list.component.scss']
 })
 export class CourseListComponent implements OnInit {
-  displayedColumns: string[] = ['university', 'city', 'country', 'courseName', 'courseDescription', 'startDate', 'endDate' , 'price'];
+  displayedColumns: string[] = [ 'courseName', 'location', 'startDate', 'length', 'price'];
   dataSource = new MatTableDataSource();
   totalCourses = 0;
   pageSize = 10;
@@ -31,21 +31,24 @@ export class CourseListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private courseService: CourseService, private router: Router, private snackBar: MatSnackBar) {}
+  constructor(private courseService: CourseService, private router: Router, private snackBar: MatSnackBar, private route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+      this.filterValue = params['search'] || '';
+      this.pageIndex = 0;  // Reset pagination if a new search is applied
+      this.getCourses(this.pageIndex, this.pageSize, this.filterValue);
+    });
+  }
 
   ngOnInit(): void {
-    this.getCourses(this.pageIndex, this.pageSize, this.filterValue);  // Initial load of data
   }
 
   getCourses(pageIndex: number, pageSize: number, filter: string): void {
-    const skip = pageIndex * pageSize;
-
-    this.courseService.getFilteredCourses(skip, pageSize, filter).subscribe(
+    this.courseService.getFilteredCourses(pageIndex+1, pageSize, filter).subscribe(
       (response) => {
         this.dataSource.data = response.courses;
         this.totalCourses = response.total;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        // this.dataSource.paginator = this.paginator;
+        // this.dataSource.sort = this.sort;
       },
       (error) => {
         console.error('Failed to fetch courses', error);
@@ -59,10 +62,8 @@ export class CourseListComponent implements OnInit {
     this.getCourses(this.pageIndex, this.pageSize, this.filterValue);
   }
 
-  applyFilter(event: Event): void {
-    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.pageIndex = 0;  // Reset to first page on new filter
-    this.getCourses(this.pageIndex, this.pageSize, this.filterValue);  // Fetch filtered data
+  public getLength(end: string, start: string){
+    return (new Date(end).getTime()  - new Date(start).getTime())/(1000*60*60*24)
   }
 
   editCourse(id: string): void {

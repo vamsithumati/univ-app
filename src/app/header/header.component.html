@@ -1,7 +1,13 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="tool-bar">
     <span>Course Management</span>
-    <span class="spacer"></span>
-    <button mat-button [routerLink]="['/courses']">Courses</button>
-    <button mat-button [routerLink]="['/courses/new']">Create Course</button>
+    <mat-form-field class="search-bar" appearance="outline">
+        
+        <input matInput [formControl]="searchKeyword" placeholder="Search">
+        <button matSuffix mat-icon-button aria-label="Search" (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+   
+    <button mat-flat-button [routerLink]="['/courses/new']">Add course</button>
   </mat-toolbar>
   

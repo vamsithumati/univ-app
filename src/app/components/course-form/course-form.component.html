@@ -1,33 +1,148 @@
 <div class="container">
-  <mat-card>
+  <mat-card class="course-card">
     <h2>{{ isUpdateMode ? 'Update' : 'Create' }} Course</h2>
-    <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="title" required>
-        <mat-error *ngIf="courseForm.controls['title'].invalid">Title is required</mat-error>
-      </mat-form-field>
+    <div class="container">
+      <form [formGroup]="courseForm">
+        
+        <!-- Course Name Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Course Name</mat-label>
+          <input matInput formControlName="courseName" placeholder="Enter course name" required>
+          <mat-error *ngIf="courseForm.get('courseName')?.hasError('required') && courseForm.get('courseName')?.touched">
+            Course Name is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- University Field with MatSelect -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select University</mat-label>
+          <input type="text" matInput [formControl]="universityControl" [matAutocomplete]="auto1">
+          <mat-autocomplete #auto1="matAutocomplete">
+            <mat-option *ngFor="let university of filteredUniversities | async" [value]="university">
+              {{ university }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="universityControl.hasError('invalidListEntry') && universityControl.touched">
+            The entered university is not in the list
+          </mat-error>
+          
+          <!-- Error message if input is required but empty -->
+          <mat-error *ngIf="universityControl.hasError('required') && universityControl.touched">
+            University selection is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- Country Field with MatSelect -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Country</mat-label>
+          <input type="text" matInput [formControl]="countryControl" [matAutocomplete]="auto3">
+          <mat-autocomplete #auto3="matAutocomplete">
+            <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+              {{ country }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="countryControl.hasError('invalidListEntry') && countryControl.touched">
+            The entered Country is not in the list
+          </mat-error>
+          
+          <!-- Error message if input is required but empty -->
+          <mat-error *ngIf="countryControl.hasError('required') && countryControl.touched">
+            Country selection is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- City Field with MatSelect -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>City</mat-label>
+          <input type="text" matInput [formControl]="cityControl" [matAutocomplete]="auto2">
+          <mat-autocomplete #auto2="matAutocomplete">
+            <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+              {{ city }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="cityControl.hasError('invalidListEntry') && cityControl.touched">
+            The entered City is not in the list
+          </mat-error>
+          
+          <!-- Error message if input is required but empty -->
+          <mat-error *ngIf="cityControl.hasError('required') && cityControl.touched">
+            City selection is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- Price and Currency Fields in the same row -->
+        <div class="row">
+           <!-- Currency Field with MatSelect -->
+           <mat-form-field appearance="outline" class="currency-field">
+            <mat-label>Currency</mat-label>
+            <mat-select formControlName="currency" required>
+              <mat-option *ngFor="let currency of currencies" [value]="currency">
+                {{ currency }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="courseForm.get('currency')?.hasError('required') && courseForm.get('currency')?.touched">
+              Currency is required
+            </mat-error>
+          </mat-form-field>
+          <!-- Price Field -->
+          <mat-form-field appearance="outline" class="price-field">
+            <mat-label>Price</mat-label>
+            <input matInput type="number" formControlName="price" placeholder="Enter price" required>
+            <mat-error *ngIf="courseForm.get('price')?.hasError('required') && courseForm.get('price')?.touched">
+              Price is required
+            </mat-error>
+            <mat-error *ngIf="courseForm.get('price')?.hasError('min') && courseForm.get('price')?.touched">
+              Price must be at least 1
+            </mat-error>
+          </mat-form-field>
+    
+         
+        </div>
+    
+        <!-- Start Date Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate" placeholder="Choose start date" required>
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+          <mat-error *ngIf="courseForm.get('startDate')?.hasError('required') && courseForm.get('startDate')?.touched">
+            Start Date is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- End Date Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate" placeholder="Choose end date" required>
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+          <mat-error *ngIf="courseForm.get('endDate')?.hasError('required') && courseForm.get('endDate')?.touched">
+            End Date is required
+          </mat-error>
+        </mat-form-field>
+    
+        <!-- Course Description Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Course Description</mat-label>
+          <textarea matInput formControlName="courseDescription" placeholder="Enter course description" required></textarea>
+          <mat-error *ngIf="courseForm.get('courseDescription')?.hasError('required') && courseForm.get('courseDescription')?.touched">
+            Course Description is required
+          </mat-error>
+        </mat-form-field>
+    
+       
+    <div class="row">
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <input matInput formControlName="description" required>
-        <mat-error *ngIf="courseForm.controls['description'].invalid">Description is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Duration (hours)</mat-label>
-        <input matInput type="number" formControlName="duration" required>
-        <mat-error *ngIf="courseForm.controls['duration'].invalid">Valid duration is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Date</mat-label>
-        <input matInput type="date" formControlName="date" required>
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" type="submit" [disabled]="courseForm.invalid">
+      <button mat-raised-button color="primary" type="submit" (click)="saveCourse()">
         {{ isUpdateMode ? 'Update' : 'Create' }} Course
       </button>
+
+      <button mat-raised-button color="secondary"  (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
+     
     </form>
+    </div>
   </mat-card>
 </div>

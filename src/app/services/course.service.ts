@@ -14,17 +14,12 @@ export interface ResponseCourse {
   providedIn: 'root',
 })
 export class CourseService {
-  private apiUrl = 'https://univ-backend-vhua.onrender.com'; // Replace with your FastAPI backend URL
-
+  private apiUrl = 'https://univ-backend-vhua.onrender.com';
   constructor(private http: HttpClient) {}
 
-  // Get all courses
-  getCourses(): Observable<ResponseCourse> {
-    return this.http.get<ResponseCourse>(`${this.apiUrl}/courses/`);
-  }
   // Get paginated courses
-  getFilteredCourses(skip: number, limit: number, search: string): Observable<ResponseCourse> {
-    return this.http.get<any>(`${this.apiUrl}/courses?skip=${skip}&limit=${limit}&search=${search}`);
+  getFilteredCourses(page: number, limit: number, search: string): Observable<ResponseCourse> {
+    return this.http.get<any>(`${this.apiUrl}/courses?page=${page}&limit=${limit}&search=${search}`);
   }
   // Get a single course by ID
   getCourse(id: string): Observable<Course> {
